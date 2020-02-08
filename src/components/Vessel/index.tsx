@@ -3,6 +3,10 @@ import TimeContext from "../shared-contexts/TimeContext";
 import MapboxMapContext from "../MapboxMap/MapboxMapContext";
 import { VesselData } from "../../shared-types/race-data";
 
+import { GeoJSON } from "../../shared-types/geojson";
+import { GeoJSONSource } from "mapbox-gl";
+import { interpolatePosition } from "../../utilities/vessel-data";
+
 type VesselProps = {
   data: VesselData;
 };
@@ -13,21 +17,21 @@ const Vessel: React.FC<VesselProps> = ({ data }) => {
   // Add path line to Mapbox map
   useEffect(() => {
     if (map != null) {
-      const id = `${data.name}-path`;
+      const pathID = `${data.name}-path`;
 
       // Clean up any previous sources and layers
-      if (map.getSource(id)) {
-        map.removeSource(id);
+      if (map.getSource(pathID)) {
+        map.removeSource(pathID);
       }
-      if (map.getLayer(id)) {
-        map.removeLayer(id);
+      if (map.getLayer(pathID)) {
+        map.removeLayer(pathID);
       }
 
-      map.addSource(id, { type: "geojson", data: data.path });
+      map.addSource(pathID, { type: "geojson", data: data.path });
       map.addLayer({
-        id,
+        id: pathID,
         type: "line",
-        source: id,
+        source: pathID,
         paint: {
           "line-color": "#00FF00",
           "line-width": 2
@@ -36,8 +40,64 @@ const Vessel: React.FC<VesselProps> = ({ data }) => {
     }
   }, [map, data.path, data.name]);
 
+  const markerID = `${data.name}-marker`;
+
+  // Add marker point to the Mapbox map
+  useEffect(() => {
+    if (map != null) {
+      // Clean up any previous sources and layers
+      if (map.getSource(markerID)) {
+        map.removeSource(markerID);
+      }
+      if (map.getLayer(markerID)) {
+        map.removeLayer(markerID);
+      }
+
+      map.addSource(markerID, {
+        type: "geojson",
+        data: coord2Feature(data.positions[0].coordinates)
+      });
+      map.addLayer({
+        id: markerID,
+        type: "circle",
+        source: markerID,
+        paint: {
+          "circle-color": "#0000FF",
+          "circle-radius": 5
+        }
+      });
+    }
+  }, [map, data.positions, data.name]);
+
+  // Update marker point
+  useEffect(() => {
+    if (map !== null) {
+      const currentPosition = interpolatePosition(
+        time.currentTime,
+        data.positions
+      );
+      if (currentPosition) {
+        (map.getSource(markerID) as GeoJSONSource).setData(
+          coord2Feature(currentPosition)
+        );
+      } else {
+        (map.getSource(markerID) as GeoJSONSource).setData(
+          coord2Feature([0, 0])
+        );
+      }
+    }
+  }, [map, time.currentTime]);
+
   // No DOM output from this component
   return null;
+};
+
+const coord2Feature = (coord: number[]): GeoJSON.PointFeature => {
+  return {
+    type: "Feature",
+    properties: {},
+    geometry: { type: "Point", coordinates: coord }
+  };
 };
 
 export default Vessel;

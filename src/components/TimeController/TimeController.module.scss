@@ -1,0 +1,13 @@
+.TimeController {
+  border: 1px solid black;
+  background: white;
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  padding: 1em;
+  border-radius: 0.25em;
+}
+
+.CurrentTime {
+  font-family: "Lucida Console", "Monaco", monospace;
+}

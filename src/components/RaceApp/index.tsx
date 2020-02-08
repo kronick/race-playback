@@ -1,27 +1,46 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import MapboxMap from "../MapboxMap";
 import TimeContext from "../shared-contexts/TimeContext";
 import parseRaceData from "../../utilities/parse-race-data";
 import Vessel from "../Vessel";
+import TimeController from "../TimeController";
 
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(20);
 
   const raceData = useMemo(() => parseRaceData(data), []);
 
+  // Auto increment time
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentTime(
+        c => (c + playbackRate / 30) % raceData.meta.lengthInSeconds
+      );
+    }, 33.333);
+
+    // Clear timer on unmount
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [raceData.meta.lengthInSeconds]);
+
   return (
-    <MapboxMap
-      width="100vw"
-      height="100vh"
-      token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
-      styleUrl="mapbox://styles/kronick2/ck6b9w5nl0mp21iqs7s3z6c4x"
+    <TimeContext.Provider
+      value={{ currentTime: Math.round(currentTime), setCurrentTime }}
     >
-      <TimeContext.Provider value={{ currentTime, setCurrentTime }}>
+      <MapboxMap
+        width="100vw"
+        height="100vh"
+        token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
+        styleUrl="mapbox://styles/kronick2/ck6b9w5nl0mp21iqs7s3z6c4x"
+      >
         {raceData.vessels.map(v => (
           <Vessel data={v} key={v.name} />
         ))}
-      </TimeContext.Provider>
-    </MapboxMap>
+      </MapboxMap>
+      <TimeController />
+    </TimeContext.Provider>
   );
 };
 
