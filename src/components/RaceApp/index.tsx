@@ -7,7 +7,7 @@ import TimeController from "../TimeController";
 
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(20);
+  const [playbackRate, setPlaybackRate] = useState(5);
 
   const raceData = useMemo(() => parseRaceData(data), []);
 
@@ -15,9 +15,9 @@ const RaceApp: React.FC<{}> = () => {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setCurrentTime(
-        c => (c + playbackRate / 30) % raceData.meta.lengthInSeconds
+        c => (c + playbackRate / 60) % raceData.meta.lengthInSeconds
       );
-    }, 33.333);
+    }, 16.66666);
 
     // Clear timer on unmount
     return () => {
@@ -26,9 +26,7 @@ const RaceApp: React.FC<{}> = () => {
   }, [raceData.meta.lengthInSeconds]);
 
   return (
-    <TimeContext.Provider
-      value={{ currentTime: Math.round(currentTime), setCurrentTime }}
-    >
+    <TimeContext.Provider value={{ currentTime, setCurrentTime }}>
       <MapboxMap
         width="100vw"
         height="100vh"

@@ -21,7 +21,7 @@ const parseRaceData = (input: string): RaceData => {
         name: `Vessel ${i}`,
         path,
         positions: coords
-          .map((c, i) => ({ timestamp: i, coordinates: c }))
+          .map((c, i) => ({ timestamp: i / 2, coordinates: c }))
           .filter(c => c.coordinates !== null) as {
           timestamp: number;
           coordinates: [number, number];

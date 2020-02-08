@@ -12,18 +12,17 @@ const TimeController: React.FC<{}> = () => {
   );
 };
 
-const formatTime = (seconds: number): string => {
-  const minuteFactor = 60;
-  const hourFactor = minuteFactor * 60;
+const formatTime = (m: number): string => {
+  const hourFactor = 60;
 
-  let remaining = seconds;
+  let remaining = m;
   const hours = Math.floor(remaining / hourFactor);
   remaining -= hours * hourFactor;
 
-  const minutes = Math.floor(remaining / minuteFactor);
-  remaining -= minutes * minuteFactor;
+  const minutes = Math.floor(remaining);
+  const seconds = Math.round((remaining - minutes) * 60);
 
-  return `${lpad(hours)}h:${lpad(minutes)}m:${lpad(remaining)}s`;
+  return `t+${lpad(hours)}h:${lpad(minutes)}m:${lpad(seconds)}s`;
 };
 
 const lpad = (n: number, d: number = 2) => {
