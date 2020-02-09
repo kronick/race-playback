@@ -15,7 +15,7 @@ const RaceApp: React.FC<{}> = () => {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setCurrentTime(
-        c => (c + playbackRate / 60) % raceData.meta.lengthInSeconds
+        c => (c + playbackRate / 60) % raceData.meta.lengthInMinutes
       );
     }, 16.66666);
 
@@ -23,10 +23,17 @@ const RaceApp: React.FC<{}> = () => {
     return () => {
       window.clearInterval(timer);
     };
-  }, [raceData.meta.lengthInSeconds]);
+  }, [raceData.meta.lengthInMinutes]);
 
   return (
-    <TimeContext.Provider value={{ currentTime, setCurrentTime }}>
+    <TimeContext.Provider
+      value={{
+        currentTime,
+        startTime: 0,
+        endTime: raceData.meta.lengthInMinutes,
+        setCurrentTime
+      }}
+    >
       <MapboxMap
         width="100vw"
         height="100vh"

@@ -15,6 +15,6 @@ export type PositionsArray = Array<{
 export type RaceData = {
   vessels: VesselData[];
   meta: {
-    lengthInSeconds: number;
+    lengthInMinutes: number;
   };
 };

@@ -17,7 +17,7 @@ describe("Race data parser", () => {
     const endTimes = parsed.vessels.map(
       v => v.positions[v.positions.length - 1].timestamp
     );
-    expect(Math.max(...endTimes)).toBe(parsed.meta.lengthInSeconds);
+    expect(Math.max(...endTimes)).toBe(parsed.meta.lengthInMinutes);
   });
 });
 

@@ -33,7 +33,7 @@ const parseRaceData = (input: string): RaceData => {
   return {
     ...out,
     meta: {
-      lengthInSeconds: Math.max(
+      lengthInMinutes: Math.max(
         ...out.vessels.map(v => v.positions[v.positions.length - 1].timestamp)
       )
     }

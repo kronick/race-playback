@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import TimeContext from "../shared-contexts/TimeContext";
+import classnames from "classnames";
 
 import styles from "./TimeController.module.scss";
 
@@ -7,7 +8,33 @@ const TimeController: React.FC<{}> = () => {
   const time = useContext(TimeContext);
   return (
     <div className={styles.TimeController}>
+      {/* <div className={styles.PlayPause}>▶</div> */}
+      <div className={styles.PlayPause}>❚❚</div>
+      <TimeBar />
+
       <div className={styles.CurrentTime}>{formatTime(time.currentTime)}</div>
+    </div>
+  );
+};
+
+const TimeBar: React.FC<{}> = () => {
+  const time = useContext(TimeContext);
+  return (
+    <div className={styles.TimeBar}>
+      <div className={styles.TimeBarBackground} />
+      <div
+        className={styles.TimeBarElapsed}
+        style={{
+          width: `${(time.currentTime / (time.endTime - time.startTime)) *
+            100}%`
+        }}
+      />
+      <div
+        className={styles.TimeBarDot}
+        style={{
+          left: `${(time.currentTime / (time.endTime - time.startTime)) * 100}%`
+        }}
+      />
     </div>
   );
 };

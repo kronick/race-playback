@@ -33,62 +33,13 @@ const Vessel: React.FC<VesselProps> = ({ data }) => {
         type: "line",
         source: pathID,
         paint: {
-          "line-color": "#00FF00",
+          "line-color": "#A8BFBD",
+          "line-opacity": 0.5,
           "line-width": 2
         }
       });
     }
   }, [map, data.path, data.name]);
-
-  const markerID = `${data.name}-marker`;
-
-  // // Add marker point to the Mapbox map
-  // useEffect(() => {
-  //   if (map != null) {
-  //     // Clean up any previous sources and layers
-  //     if (map.getSource(markerID)) {
-  //       map.removeSource(markerID);
-  //     }
-  //     if (map.getLayer(markerID)) {
-  //       map.removeLayer(markerID);
-  //     }
-
-  //     map.addSource(markerID, {
-  //       type: "geojson",
-  //       data: coord2Feature(data.positions[0].coordinates)
-  //     });
-  //     map.addLayer({
-  //       id: markerID,
-  //       type: "circle",
-  //       source: markerID,
-  //       paint: {
-  //         "circle-color": "#0000FF",
-  //         "circle-radius": 5
-  //       }
-  //     });
-  //   }
-  // }, [map, data.positions, data.name]);
-
-  // // Update marker point
-  // useEffect(() => {
-  //   if (map !== null) {
-  //     const currentPosition = interpolatePosition(
-  //       time.currentTime,
-  //       data.positions
-  //     );
-  //     if (currentPosition) {
-  //       (map.getSource(markerID) as GeoJSONSource).setData(
-  //         coord2Feature(currentPosition)
-  //       );
-  //     } else {
-  //       (map.getSource(markerID) as GeoJSONSource).setData(
-  //         coord2Feature([0, 0])
-  //       );
-  //     }
-  //   }
-  // }, [map, time.currentTime]);
-  //
-  // return null;
 
   const currentPosition = interpolatePosition(time.currentTime, data.positions);
   if (map !== null && currentPosition) {
@@ -96,7 +47,8 @@ const Vessel: React.FC<VesselProps> = ({ data }) => {
     return (
       <div
         style={{
-          fontSize: "30px",
+          color: "#2B2B2B",
+          fontSize: "50px",
           position: "absolute",
           transform: `translate(-50%, -50%) translate(${projected.x}px,  ${projected.y}px)`
         }}
@@ -107,14 +59,6 @@ const Vessel: React.FC<VesselProps> = ({ data }) => {
   } else {
     return null;
   }
-};
-
-const coord2Feature = (coord: number[]): GeoJSON.PointFeature => {
-  return {
-    type: "Feature",
-    properties: {},
-    geometry: { type: "Point", coordinates: coord }
-  };
 };
 
 export default Vessel;
