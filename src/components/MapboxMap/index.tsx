@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import Helmet from "react-helmet";
 
@@ -18,7 +18,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
   height,
   children
 }) => {
-  let mapContainer = React.createRef<HTMLDivElement>();
+  let mapContainer = useRef<HTMLDivElement>(null);
 
   // Store the current Mapbox map instance in component state
   const [map, setMap] = useState<mapboxgl.Map | null>(() => null);

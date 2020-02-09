@@ -12,7 +12,7 @@
 
 ### UI
 
-- [ ] Timeline controller
+- [x] Timeline controller
 - [ ] Vessel list
 - [ ] Click to select vessel
 - [ ] Speed graph?

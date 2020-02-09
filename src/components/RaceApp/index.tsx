@@ -1,29 +1,35 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import MapboxMap from "../MapboxMap";
 import TimeContext from "../shared-contexts/TimeContext";
 import parseRaceData from "../../utilities/parse-race-data";
 import Vessel from "../Vessel";
 import TimeController from "../TimeController";
 
+import useAnimationTimer from "../shared-hooks/useAnimationTimer";
+
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState(5);
+  const [playbackRate] = useState(20);
 
   const raceData = useMemo(() => parseRaceData(data), []);
 
-  // Auto increment time
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setCurrentTime(
-        c => (c + playbackRate / 60) % raceData.meta.lengthInMinutes
-      );
-    }, 16.66666);
+  const limitedSetCurrentTime = (t: number) => {
+    if (t > raceData.meta.lengthInMinutes)
+      setCurrentTime(raceData.meta.lengthInMinutes);
+    else if (t < 0) setCurrentTime(0);
+    else setCurrentTime(t);
+  };
 
-    // Clear timer on unmount
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [raceData.meta.lengthInMinutes]);
+  // Auto increment time
+  const updateAnimation = useMemo(
+    () => (dT: number) => {
+      setCurrentTime(
+        c => (c + playbackRate * dT) % raceData.meta.lengthInMinutes
+      );
+    },
+    [raceData.meta.lengthInMinutes, playbackRate]
+  );
+  const { play, pause, isPlaying } = useAnimationTimer(updateAnimation, 60);
 
   return (
     <TimeContext.Provider
@@ -31,7 +37,10 @@ const RaceApp: React.FC<{}> = () => {
         currentTime,
         startTime: 0,
         endTime: raceData.meta.lengthInMinutes,
-        setCurrentTime
+        setCurrentTime: limitedSetCurrentTime,
+        pause,
+        play,
+        isPlaying
       }}
     >
       <MapboxMap

@@ -3,8 +3,6 @@ import TimeContext from "../shared-contexts/TimeContext";
 import MapboxMapContext from "../MapboxMap/MapboxMapContext";
 import { VesselData } from "../../shared-types/race-data";
 
-import { GeoJSON } from "../../shared-types/geojson";
-import { GeoJSONSource } from "mapbox-gl";
 import { interpolatePosition } from "../../utilities/vessel-data";
 
 type VesselProps = {
