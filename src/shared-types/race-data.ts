@@ -4,6 +4,8 @@ export type VesselData = {
   color?: string;
   /** GeoJSON representation of the vessel's overall historic path */
   path: GeoJSON.LineStringFeature;
+  /** Path broken into smaller line segments, each with a `speed` property */
+  pathWithSpeeds: GeoJSON.FeatureCollection;
   positions: PositionsArray;
 };
 

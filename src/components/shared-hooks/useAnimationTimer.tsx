@@ -32,21 +32,6 @@ export default function useAnimationTimer(
     return () => {
       window.clearTimeout(timeout.current);
     };
-
-    // const timer = window.setInterval(() => {
-    //   const dT = performance.now() - lastUpdated;
-
-    //   // Call the provided callback with an accurate measure of how much time
-    //   // has elapsed since the last frame
-    //   onFrame(dT);
-
-    //   setLastUpdated(performance.now());
-    // }, 1000 / framerate);
-
-    // // Clean up timer whenever this component unmounts or the effect runss
-    // return () => {
-    //   window.clearInterval(timer);
-    // };
   }, [framerate, onFrame, lastUpdated, isPaused]);
 
   const pause = () => {

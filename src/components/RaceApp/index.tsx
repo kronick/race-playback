@@ -29,6 +29,7 @@ const RaceApp: React.FC<{}> = () => {
     },
     [raceData.meta.lengthInMinutes, playbackRate]
   );
+
   const { play, pause, isPlaying } = useAnimationTimer(updateAnimation, 60);
 
   return (
@@ -47,10 +48,10 @@ const RaceApp: React.FC<{}> = () => {
         width="100vw"
         height="100vh"
         token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
-        styleUrl="mapbox://styles/kronick2/ck6b9w5nl0mp21iqs7s3z6c4x"
+        styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
       >
-        {raceData.vessels.map(v => (
-          <Vessel data={v} key={v.name} />
+        {raceData.vessels.map((v, i) => (
+          <Vessel data={v} key={v.name} trace={i === 1} />
         ))}
       </MapboxMap>
       <TimeController />
