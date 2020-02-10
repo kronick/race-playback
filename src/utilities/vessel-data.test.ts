@@ -30,54 +30,117 @@ const manyPointsFixture = (): PositionsArray => [
 
 describe("Position interpolator", () => {
   it("works with two point paths", () => {
-    expect(interpolatePosition(0, twoPointsFixture())).toEqual([0, 0]);
-    expect(interpolatePosition(1, twoPointsFixture())).toEqual([1, 1]);
+    expect(interpolatePosition(0, twoPointsFixture())?.coordinates).toEqual([
+      0,
+      0
+    ]);
+    expect(interpolatePosition(1, twoPointsFixture())?.coordinates).toEqual([
+      1,
+      1
+    ]);
 
-    expect(interpolatePosition(0.5, twoPointsFixture())?.[0]).toBeCloseTo(0.5);
-    expect(interpolatePosition(0.5, twoPointsFixture())?.[1]).toBeCloseTo(0.5);
+    expect(
+      interpolatePosition(0.5, twoPointsFixture())?.coordinates[0]
+    ).toBeCloseTo(0.5);
+    expect(
+      interpolatePosition(0.5, twoPointsFixture())?.coordinates[1]
+    ).toBeCloseTo(0.5);
   });
 
   it("works with three point paths", () => {
-    expect(interpolatePosition(0, threePointsFixture())).toEqual([0, 0]);
-    expect(interpolatePosition(1, threePointsFixture())).toEqual([1, 4]);
-    expect(interpolatePosition(2, threePointsFixture())).toEqual([2, 2]);
+    expect(interpolatePosition(0, threePointsFixture())?.coordinates).toEqual([
+      0,
+      0
+    ]);
+    expect(interpolatePosition(1, threePointsFixture())?.coordinates).toEqual([
+      1,
+      4
+    ]);
+    expect(interpolatePosition(2, threePointsFixture())?.coordinates).toEqual([
+      2,
+      2
+    ]);
 
-    expect(interpolatePosition(0.5, threePointsFixture())?.[0]).toBeCloseTo(
-      0.5
-    );
-    expect(interpolatePosition(0.5, threePointsFixture())?.[1]).toBeCloseTo(2);
+    expect(
+      interpolatePosition(0.5, threePointsFixture())?.coordinates[0]
+    ).toBeCloseTo(0.5);
+    expect(
+      interpolatePosition(0.5, threePointsFixture())?.coordinates[1]
+    ).toBeCloseTo(2);
 
-    expect(interpolatePosition(1.5, threePointsFixture())?.[0]).toBeCloseTo(
-      1.5
-    );
-    expect(interpolatePosition(1.5, threePointsFixture())?.[1]).toBeCloseTo(3);
+    expect(
+      interpolatePosition(1.5, threePointsFixture())?.coordinates[0]
+    ).toBeCloseTo(1.5);
+    expect(
+      interpolatePosition(1.5, threePointsFixture())?.coordinates[1]
+    ).toBeCloseTo(3);
   });
 
   it("works with four point paths", () => {
-    expect(interpolatePosition(0, fourPointsFixture())).toEqual([0, 0]);
-    expect(interpolatePosition(1, fourPointsFixture())).toEqual([1, 4]);
-    expect(interpolatePosition(2, fourPointsFixture())).toEqual([2, 2]);
+    expect(interpolatePosition(0, fourPointsFixture())?.coordinates).toEqual([
+      0,
+      0
+    ]);
+    expect(interpolatePosition(1, fourPointsFixture())?.coordinates).toEqual([
+      1,
+      4
+    ]);
+    expect(interpolatePosition(2, fourPointsFixture())?.coordinates).toEqual([
+      2,
+      2
+    ]);
 
-    expect(interpolatePosition(0.5, fourPointsFixture())?.[0]).toBeCloseTo(0.5);
-    expect(interpolatePosition(0.5, fourPointsFixture())?.[1]).toBeCloseTo(2);
+    expect(
+      interpolatePosition(0.5, fourPointsFixture())?.coordinates[0]
+    ).toBeCloseTo(0.5);
+    expect(
+      interpolatePosition(0.5, fourPointsFixture())?.coordinates[1]
+    ).toBeCloseTo(2);
 
-    expect(interpolatePosition(2.5, fourPointsFixture())?.[0]).toBeCloseTo(2.5);
-    expect(interpolatePosition(2.5, fourPointsFixture())?.[1]).toBeCloseTo(2.5);
+    expect(
+      interpolatePosition(2.5, fourPointsFixture())?.coordinates[0]
+    ).toBeCloseTo(2.5);
+    expect(
+      interpolatePosition(2.5, fourPointsFixture())?.coordinates[1]
+    ).toBeCloseTo(2.5);
   });
 
   it("works with many point paths", () => {
-    expect(interpolatePosition(0, manyPointsFixture())).toEqual([0, 0]);
-    expect(interpolatePosition(1, manyPointsFixture())).toEqual([1, 100]);
-    expect(interpolatePosition(2, manyPointsFixture())).toEqual([2, 2]);
+    expect(interpolatePosition(0, manyPointsFixture())?.coordinates).toEqual([
+      0,
+      0
+    ]);
+    expect(interpolatePosition(1, manyPointsFixture())?.coordinates).toEqual([
+      1,
+      100
+    ]);
+    expect(interpolatePosition(2, manyPointsFixture())?.coordinates).toEqual([
+      2,
+      2
+    ]);
 
-    expect(interpolatePosition(6, manyPointsFixture())).toEqual([6, 6]);
-    expect(interpolatePosition(3, manyPointsFixture())).toEqual([3, 3]);
+    expect(interpolatePosition(6, manyPointsFixture())?.coordinates).toEqual([
+      6,
+      6
+    ]);
+    expect(interpolatePosition(3, manyPointsFixture())?.coordinates).toEqual([
+      3,
+      3
+    ]);
 
-    expect(interpolatePosition(0.5, manyPointsFixture())?.[0]).toBeCloseTo(0.5);
-    expect(interpolatePosition(0.5, manyPointsFixture())?.[1]).toBeCloseTo(50);
+    expect(
+      interpolatePosition(0.5, manyPointsFixture())?.coordinates[0]
+    ).toBeCloseTo(0.5);
+    expect(
+      interpolatePosition(0.5, manyPointsFixture())?.coordinates[1]
+    ).toBeCloseTo(50);
 
-    expect(interpolatePosition(1.5, manyPointsFixture())?.[0]).toBeCloseTo(1.5);
-    expect(interpolatePosition(1.5, manyPointsFixture())?.[1]).toBeCloseTo(51);
+    expect(
+      interpolatePosition(1.5, manyPointsFixture())?.coordinates[0]
+    ).toBeCloseTo(1.5);
+    expect(
+      interpolatePosition(1.5, manyPointsFixture())?.coordinates[1]
+    ).toBeCloseTo(51);
   });
 
   it("returns null for out-of-bounds times", () => {
