@@ -6,6 +6,7 @@ import Vessel from "../Vessel";
 import TimeController from "../TimeController";
 
 import useAnimationTimer from "../shared-hooks/useAnimationTimer";
+import SpeeedLinesLayer from "../SpeedLinesLayer";
 
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
@@ -57,6 +58,7 @@ const RaceApp: React.FC<{}> = () => {
         {raceData.vessels.map((v, i) => (
           <Vessel data={v} key={v.name} trace={i === 1} />
         ))}
+        <SpeeedLinesLayer vessel={raceData.vessels[1]} />
       </MapboxMap>
       <TimeController />
     </TimeContext.Provider>
