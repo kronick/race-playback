@@ -6,6 +6,8 @@ import { VesselData } from "../../shared-types/race-data";
 import { interpolatePosition } from "../../utilities/vessel-data";
 import useThrottledEffect from "../shared-hooks/useThrottledEffect";
 
+import styles from "./Vessel.module.scss";
+
 type VesselProps = {
   data: VesselData;
   trace?: boolean;
@@ -91,19 +93,21 @@ const Vessel: React.FC<VesselProps> = ({ data, trace = false }) => {
   );
 
   const currentPosition = interpolatePosition(time.currentTime, data.positions);
+  const width = 10;
+  const height = 15;
   if (map !== null && currentPosition) {
-    const projected = map.project(currentPosition);
+    const projected = map.project(currentPosition.coordinates);
+    console.log(currentPosition.heading);
     return (
       <div
+        className={styles.Vessel}
         style={{
-          color: "#aaa",
-          fontSize: "50px",
+          borderColor: `transparent transparent #aaa transparent`,
+          borderWidth: `0 ${width / 2}px ${height}px ${width / 2}px`,
           position: "absolute",
-          transform: `translate(-50%, -50%) translate(${projected.x}px,  ${projected.y}px)`
+          transform: `translate(-50%, -50%) translate(${projected.x}px,  ${projected.y}px) rotate(${currentPosition.heading}deg) `
         }}
-      >
-        •
-      </div>
+      ></div>
     );
   } else {
     return null;

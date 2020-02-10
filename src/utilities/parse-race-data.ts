@@ -1,7 +1,7 @@
-import { RaceData } from "../shared-types/race-data";
+import { RaceData, PositionsArray } from "../shared-types/race-data";
 import { GeoJSON } from "../shared-types/geojson";
 
-import { distance } from "@turf/turf";
+import { distance, bearing } from "@turf/turf";
 
 const parseRaceData = (
   input: string,
@@ -17,6 +17,7 @@ const parseRaceData = (
 
       // Generate line segments with speed property
       const speedFeatures: GeoJSON.Feature<GeoJSON.LineString>[] = [];
+      const positionsOut: PositionsArray = [];
       let lastGoodPoint: {
         coord: [number, number];
         timestamp: number;
@@ -34,6 +35,13 @@ const parseRaceData = (
         const dT = indexToTime(i) - lastGoodPoint.timestamp;
         const dP = distance(lastGoodPoint.coord, c);
         const speed = (dP / dT) * 32.3974082; // km / minute -> nm / hour
+        const heading = bearing(lastGoodPoint.coord, c);
+
+        positionsOut.push({
+          timestamp: indexToTime(i),
+          coordinates: c,
+          heading
+        });
 
         speedFeatures.push({
           type: "Feature" as const,
@@ -64,12 +72,7 @@ const parseRaceData = (
           features: speedFeatures,
           properties: {}
         },
-        positions: coords
-          .map((c, i) => ({ timestamp: indexToTime(i), coordinates: c }))
-          .filter(c => c.coordinates !== null) as {
-          timestamp: number;
-          coordinates: [number, number];
-        }[]
+        positions: positionsOut
       };
     })
   };

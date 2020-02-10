@@ -3,7 +3,7 @@ import { PositionsArray } from "../shared-types/race-data";
 export const interpolatePosition = (
   time: number,
   positions: PositionsArray
-): [number, number] | null => {
+): { coordinates: [number, number]; heading: number } | null => {
   if (positions.length === 0) {
     return null;
   }
@@ -16,15 +16,40 @@ export const interpolatePosition = (
 
     // Case where time matches midpoint exactly
     if (t_mid === time) {
-      return positions[i_mid].coordinates;
+      return {
+        coordinates: positions[i_mid].coordinates,
+        heading: positions[i_mid].heading
+      };
     }
     // Case where midpoint is lower bound of interpolated range
     if (t_mid < time && positions[i_mid + 1]?.timestamp > time) {
-      return interpolateCoords(time, positions[i_mid], positions[i_mid + 1]);
+      return {
+        coordinates: interpolateCoords(
+          time,
+          positions[i_mid],
+          positions[i_mid + 1]
+        ),
+        heading: interpolateHeading(
+          time,
+          positions[i_mid],
+          positions[i_mid + 1]
+        )
+      };
     }
     // Case where midpoint is upper bound of interpolated range
     if (t_mid > time && positions[i_mid - 1]?.timestamp < time) {
-      return interpolateCoords(time, positions[i_mid - 1], positions[i_mid]);
+      return {
+        coordinates: interpolateCoords(
+          time,
+          positions[i_mid - 1],
+          positions[i_mid]
+        ),
+        heading: interpolateHeading(
+          time,
+          positions[i_mid],
+          positions[i_mid + 1]
+        )
+      };
     }
 
     if (t_mid < time) {
@@ -48,4 +73,12 @@ const interpolateCoords = (
     (b.coordinates[0] - a.coordinates[0]) * blend + a.coordinates[0],
     (b.coordinates[1] - a.coordinates[1]) * blend + a.coordinates[1]
   ];
+};
+
+const interpolateHeading = (
+  t: number,
+  a: { timestamp: number; heading: number },
+  b: { timestamp: number; heading: number }
+): number => {
+  return a.heading;
 };

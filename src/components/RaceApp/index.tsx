@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import MapboxMap from "../MapboxMap";
 import TimeContext from "../shared-contexts/TimeContext";
 import parseRaceData from "../../utilities/parse-race-data";
@@ -31,6 +31,10 @@ const RaceApp: React.FC<{}> = () => {
   );
 
   const { play, pause, isPlaying } = useAnimationTimer(updateAnimation, 60);
+
+  useEffect(() => {
+    pause();
+  }, []);
 
   return (
     <TimeContext.Provider

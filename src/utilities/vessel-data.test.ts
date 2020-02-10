@@ -3,29 +3,29 @@ import { PositionsArray } from "../shared-types/race-data";
 
 // Fixtures
 const twoPointsFixture = (): PositionsArray => [
-  { timestamp: 0, coordinates: [0, 0] },
-  { timestamp: 1, coordinates: [1, 1] }
+  { timestamp: 0, coordinates: [0, 0], heading: 0 },
+  { timestamp: 1, coordinates: [1, 1], heading: 1 }
 ];
 const threePointsFixture = (): PositionsArray => [
-  { timestamp: 0, coordinates: [0, 0] },
-  { timestamp: 1, coordinates: [1, 4] },
-  { timestamp: 2, coordinates: [2, 2] }
+  { timestamp: 0, coordinates: [0, 0], heading: 0 },
+  { timestamp: 1, coordinates: [1, 4], heading: 1 },
+  { timestamp: 2, coordinates: [2, 2], heading: 2 }
 ];
 
 const fourPointsFixture = (): PositionsArray => [
-  { timestamp: 0, coordinates: [0, 0] },
-  { timestamp: 1, coordinates: [1, 4] },
-  { timestamp: 2, coordinates: [2, 2] },
-  { timestamp: 3, coordinates: [3, 3] }
+  { timestamp: 0, coordinates: [0, 0], heading: 0 },
+  { timestamp: 1, coordinates: [1, 4], heading: 1 },
+  { timestamp: 2, coordinates: [2, 2], heading: 2 },
+  { timestamp: 3, coordinates: [3, 3], heading: 3 }
 ];
 const manyPointsFixture = (): PositionsArray => [
-  { timestamp: 0, coordinates: [0, 0] },
-  { timestamp: 1, coordinates: [1, 100] },
-  { timestamp: 2, coordinates: [2, 2] },
-  { timestamp: 3, coordinates: [3, 3] },
-  { timestamp: 4, coordinates: [4, 4] },
-  { timestamp: 5, coordinates: [5, 5] },
-  { timestamp: 6, coordinates: [6, 6] }
+  { timestamp: 0, coordinates: [0, 0], heading: 0 },
+  { timestamp: 1, coordinates: [1, 100], heading: 1 },
+  { timestamp: 2, coordinates: [2, 2], heading: 2 },
+  { timestamp: 3, coordinates: [3, 3], heading: 3 },
+  { timestamp: 4, coordinates: [4, 4], heading: 4 },
+  { timestamp: 5, coordinates: [5, 5], heading: 5 },
+  { timestamp: 6, coordinates: [6, 6], heading: 6 }
 ];
 
 describe("Position interpolator", () => {
