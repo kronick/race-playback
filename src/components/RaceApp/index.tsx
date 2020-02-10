@@ -56,7 +56,7 @@ const RaceApp: React.FC<{}> = () => {
         styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
       >
         {raceData.vessels.map((v, i) => (
-          <Vessel data={v} key={v.name} trace={i === 1} />
+          <Vessel data={v} key={v.name} trace={false} />
         ))}
         <SpeeedLinesLayer vessel={raceData.vessels[1]} />
       </MapboxMap>

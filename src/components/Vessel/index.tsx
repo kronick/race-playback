@@ -97,7 +97,6 @@ const Vessel: React.FC<VesselProps> = ({ data, trace = false }) => {
   const height = 15;
   if (map !== null && currentPosition) {
     const projected = map.project(currentPosition.coordinates);
-    console.log(currentPosition.heading);
     return (
       <div
         className={styles.Vessel}
