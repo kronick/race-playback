@@ -10,7 +10,7 @@ import SpeeedLinesLayer from "../SpeedLinesLayer";
 
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
-  const [playbackRate] = useState(20);
+  const [playbackRate] = useState(2);
 
   const raceData = useMemo(() => parseRaceData(data), []);
 
