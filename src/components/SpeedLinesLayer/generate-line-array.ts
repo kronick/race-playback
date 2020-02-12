@@ -25,16 +25,12 @@ export default function generateLineArray(positions: PositionsArray): number[] {
     if (i === 0 && nextPoint) {
       const normal = unitNormal(thisPoint, nextPoint);
       console.log(normal);
-      return [
-        ...thisPoint,
-        normal[0],
-        normal[1],
+      return serializeVertices(
+        thisPoint,
+        [normal, opposite(normal)],
         p.timestamp,
-        ...thisPoint,
-        -normal[0],
-        -normal[1],
-        p.timestamp
-      ];
+        0
+      );
     } else if (nextPoint && previousPoint) {
       const A = subtract(previousPoint, thisPoint);
       const B = subtract(thisPoint, nextPoint);
@@ -79,62 +75,50 @@ export default function generateLineArray(positions: PositionsArray): number[] {
 
       const extrudeC = mult(joinNormal, (t ? -1 : 1) * miterLength);
 
-      // Junction required
-      if (flip) {
-        return [
-          ...thisPoint,
-          ...extrudeC,
-          p.timestamp,
-          ...thisPoint, // Miter corner A
-          ...extrudeA,
-          p.timestamp,
-          ...thisPoint, // Miter corner B
-          ...extrudeB,
-          p.timestamp,
-          ...thisPoint, // Repeat third point to produce degenerate triangle
-          ...extrudeB,
-          p.timestamp,
-          ...thisPoint, // Repeat interior point
-          ...extrudeC,
-          p.timestamp
-        ];
-      } else {
-        return [
-          ...thisPoint, // Miter corner A
-          ...extrudeA,
-          p.timestamp,
-          ...thisPoint,
-          ...extrudeC,
-          p.timestamp,
-          ...thisPoint, // Miter corner B
-          ...extrudeB,
-          p.timestamp,
-          ...thisPoint, // Repeat third point to produce degenerate triangle
-          ...extrudeB,
-          p.timestamp,
-          ...thisPoint, // Repeat interior point
-          ...extrudeC,
-          p.timestamp
-        ];
-      }
+      return serializeVertices(
+        thisPoint,
+        [
+          flip ? extrudeC : extrudeA,
+          flip ? extrudeA : extrudeC,
+          extrudeB,
+          extrudeB,
+          extrudeC
+        ],
+        p.timestamp,
+        0
+      );
     } else if (previousPoint) {
       // Final point
       const normal = unitNormal(previousPoint, thisPoint);
-      console.log(normal);
-      return [
-        ...thisPoint,
-        -normal[0],
-        -normal[1],
+      return serializeVertices(
+        thisPoint,
+        [opposite(normal), normal],
         p.timestamp,
-        ...thisPoint,
-        normal[0],
-        normal[1],
-        p.timestamp
-      ];
+        0
+      );
     } else {
       return [];
     }
   });
+}
+
+function serializeVertices(
+  coordinate: Vec2,
+  extrusions: Vec2[],
+  timestamp: number,
+  speed: number
+) {
+  return extrusions.flatMap(e =>
+    serializeVertex(coordinate, e, timestamp, speed)
+  );
+}
+function serializeVertex(
+  coordinates: Vec2,
+  extrusion: Vec2,
+  timestamp: number,
+  speed: number
+) {
+  return [...coordinates, ...extrusion, timestamp];
 }
 
 function projectPoint(p: { coordinates: Vec2 }): Vec2 {
