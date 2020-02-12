@@ -32,45 +32,45 @@ const Vessel: React.FC<VesselProps> = ({ data, trace = false }) => {
       // map.addSource(pathID, { type: "geojson", data: data.path });
       map.addSource(pathID, { type: "geojson", data: data.pathWithSpeeds });
 
-      map.addLayer(
-        {
-          id: pathID,
-          type: "line",
-          source: pathID,
-          paint: {
-            "line-color": [
-              "interpolate",
-              ["linear"],
-              ["get", "speed"],
-              0,
-              "#003f5c",
-              2.5,
-              "#58508d",
-              5,
-              "#bc5090",
-              7.5,
-              "#ff6361",
-              10,
-              "#ffa600"
-            ],
-            "line-opacity": 1,
-            "line-width-transition": { duration: 1000, delay: 0 },
-            "line-width": [
-              "interpolate",
-              ["exponential", 1.5],
-              ["zoom"],
-              8,
-              0.5,
-              16,
-              1
-            ]
-          },
-          layout: {
-            "line-cap": "round"
-          }
-        },
-        "building"
-      );
+      // map.addLayer(
+      //   {
+      //     id: pathID,
+      //     type: "line",
+      //     source: pathID,
+      //     paint: {
+      //       "line-color": [
+      //         "interpolate",
+      //         ["linear"],
+      //         ["get", "speed"],
+      //         0,
+      //         "#003f5c",
+      //         2.5,
+      //         "#58508d",
+      //         5,
+      //         "#bc5090",
+      //         7.5,
+      //         "#ff6361",
+      //         10,
+      //         "#ffa600"
+      //       ],
+      //       "line-opacity": 1,
+      //       "line-width-transition": { duration: 1000, delay: 0 },
+      //       "line-width": [
+      //         "interpolate",
+      //         ["exponential", 1.5],
+      //         ["zoom"],
+      //         8,
+      //         0.5,
+      //         16,
+      //         1
+      //       ]
+      //     },
+      //     layout: {
+      //       "line-cap": "round"
+      //     }
+      //   },
+      //   "building"
+      // );
     }
   }, [map, data.pathWithSpeeds, pathID]);
 

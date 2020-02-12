@@ -40,7 +40,8 @@ const parseRaceData = (
         positionsOut.push({
           timestamp: indexToTime(i),
           coordinates: c,
-          heading
+          heading,
+          speed
         });
 
         speedFeatures.push({

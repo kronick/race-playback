@@ -15,7 +15,7 @@ import {
 export default function generateLineArray(positions: PositionsArray): number[] {
   let lastCross = 0;
 
-  return positions.flatMap((p, i) => {
+  const vertices = positions.flatMap((p, i) => {
     const thisPoint = projectPoint(p);
     const nextPoint =
       i === positions.length - 1 ? null : projectPoint(positions[i + 1]);
@@ -24,12 +24,11 @@ export default function generateLineArray(positions: PositionsArray): number[] {
     // Line start
     if (i === 0 && nextPoint) {
       const normal = unitNormal(thisPoint, nextPoint);
-      console.log(normal);
       return serializeVertices(
         thisPoint,
         [normal, opposite(normal)],
         p.timestamp,
-        0
+        p.speed
       );
     } else if (nextPoint && previousPoint) {
       const A = subtract(previousPoint, thisPoint);
@@ -85,7 +84,7 @@ export default function generateLineArray(positions: PositionsArray): number[] {
           extrudeC
         ],
         p.timestamp,
-        0
+        p.speed
       );
     } else if (previousPoint) {
       // Final point
@@ -94,12 +93,17 @@ export default function generateLineArray(positions: PositionsArray): number[] {
         thisPoint,
         [opposite(normal), normal],
         p.timestamp,
-        0
+        p.speed
       );
     } else {
       return [];
     }
   });
+
+  // Repeat final point twice to create degenerate triangles so we
+  // can concatenate different traces into a single vertex buffer
+  const final = vertices.slice(vertices.length - 6);
+  return [...vertices, ...final, ...final, ...final];
 }
 
 function serializeVertices(
@@ -118,7 +122,7 @@ function serializeVertex(
   timestamp: number,
   speed: number
 ) {
-  return [...coordinates, ...extrusion, timestamp];
+  return [...coordinates, ...extrusion, timestamp, speed];
 }
 
 function projectPoint(p: { coordinates: Vec2 }): Vec2 {

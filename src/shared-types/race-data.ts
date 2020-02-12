@@ -13,6 +13,7 @@ export type PositionsArray = Array<{
   timestamp: number;
   coordinates: [number, number];
   heading: number;
+  speed: number;
 }>;
 
 export type RaceData = {

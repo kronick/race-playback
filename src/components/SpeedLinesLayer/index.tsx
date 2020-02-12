@@ -10,10 +10,10 @@ import generateLineArray from "./generate-line-array";
 //const fragmentSource = raw("./shaders/speed-lines.frag");
 
 type SpeedLinesLayerProps = {
-  vessel: VesselData;
+  vessels: VesselData[];
 };
 const SpeedLinesLayerComponent: React.FC<SpeedLinesLayerProps> = ({
-  vessel
+  vessels
 }) => {
   const { currentTime } = useContext(TimeContext);
   const { map } = useContext(MapboxMapContext);
@@ -39,7 +39,7 @@ const SpeedLinesLayerComponent: React.FC<SpeedLinesLayerProps> = ({
     ) {
       const newRenderer = new SpeedLinesLayer(
         "custom",
-        vessel.positions,
+        vessels.map(v => v.positions),
         fragmentSource,
         vertexSource
       );
@@ -77,25 +77,28 @@ class SpeedLinesLayer implements CustomLayerInterface {
   aPos: number = 0;
   aExtrude: number = 0;
   aTime: number = 0;
+  aSpeed: number = 0;
   buffer: WebGLBuffer | null = null;
 
   fragmentSource: string;
   vertexSource: string;
 
-  positions: PositionsArray;
+  positions: PositionsArray[];
+  traceLengths: number[] = [];
   nVertices: number = 0;
 
   /** Length of trail behind each point (in same unit as input timestamps) */
-  trailLength = 10;
+  trailLength = 60;
+  lineWidth = 0.004;
 
   time: number = 0;
   map: mapboxgl.Map | null = null;
 
-  static floatsPerVertex = 5;
+  static floatsPerVertex = 6;
 
   constructor(
     id: string,
-    positions: PositionsArray,
+    positions: PositionsArray[],
     fragmentShader: string,
     vertexShader: string
   ) {
@@ -148,11 +151,21 @@ class SpeedLinesLayer implements CustomLayerInterface {
     this.aPos = gl.getAttribLocation(this.program!, "a_pos");
     this.aExtrude = gl.getAttribLocation(this.program!, "a_extrude");
     this.aTime = gl.getAttribLocation(this.program!, "a_time");
+    this.aSpeed = gl.getAttribLocation(this.program!, "a_speed");
 
     // create and initialize a WebGLBuffer to store vertex and color data
     this.buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    const data = generateLineArray(this.positions);
+    const data: number[] = [];
+    this.traceLengths = [];
+    this.positions.forEach(p => {
+      const newPoints = generateLineArray(p);
+      this.traceLengths.push(
+        newPoints.length / SpeedLinesLayer.floatsPerVertex
+      );
+      data.push(...newPoints);
+    });
+    //const data = this.positions.flatMap(p => generateLineArray(p));
     this.nVertices = data.length / SpeedLinesLayer.floatsPerVertex;
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
   }
@@ -167,9 +180,12 @@ class SpeedLinesLayer implements CustomLayerInterface {
       matrix
     );
 
+    gl.useProgram(this.program);
+    gl.uniform1i(gl.getUniformLocation(this.program, "u_persist_trace"), 1);
+
     gl.uniform1f(
       gl.getUniformLocation(this.program, "u_width"),
-      0.004 //0.000001 * (Math.cos(performance.now() / 500) + 1.5)
+      this.lineWidth //0.000001 * (Math.cos(performance.now() / 500) + 1.5)
     );
 
     gl.uniform1f(
@@ -183,6 +199,21 @@ class SpeedLinesLayer implements CustomLayerInterface {
       this.time - this.trailLength
     );
 
+    this.setupBuffers(gl);
+
+    // All traces are concatenated into a single vertex buffer for efficiency.
+    // `this.traceLengths` stores the length of each trace so we can call
+    // `gl.drawArrays()` once per trace and get a clean separation.
+    // We could also change uniforms or even shaders between each  trace, but
+    // for now we don't. This just keeps the traces visually separate.
+    let drawn = 0;
+    this.traceLengths.forEach(l => {
+      gl.drawArrays(gl.TRIANGLE_STRIP, drawn, l);
+      drawn += l;
+    });
+  }
+
+  setupBuffers(gl: WebGLRenderingContext) {
     // Tell OpenGL where to find the vertex coordinates within the vertex buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.enableVertexAttribArray(this.aPos);
@@ -215,8 +246,23 @@ class SpeedLinesLayer implements CustomLayerInterface {
       16
     );
 
+    gl.enableVertexAttribArray(this.aSpeed);
+    gl.vertexAttribPointer(
+      this.aSpeed,
+      1,
+      gl.FLOAT,
+      false,
+      SpeedLinesLayer.floatsPerVertex * 4, // 4 bytes per float
+      20
+    );
+
     gl.enable(gl.BLEND);
+    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  }
+
+  drawTrace(gl: WebGLRenderingContext, offset: number, nPoints: number) {
+    //gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.nVertices);
   }
 }

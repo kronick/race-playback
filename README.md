@@ -2,17 +2,19 @@
 
 ### Visual
 
-- [ ] Speed color coded trace line (feature collection of segments, speed as prop)
-- [ ] Animated trace lines? (timestamp in property, changing style expression?)
+- [x] Speed color coded trace line (feature collection of segments, speed as prop)
+- [x] Animated trace lines? (timestamp in property, changing style expression?)
 - [ ] Put map transform parameters into MapboxMapContext
 - [x] Triangle vessel markers
 - [x] Rotate vessel markers
+- [ ] Fix vessel heading off by one bug
 - [ ] Vessel markers scale with zoom
 - [x] New color scheme
+- [ ] per-vessel colors
 
 ### Shader
 
-- [ ] Generate offset lines
+- [x] Generate offset lines
 - [ ] Antialias lines?
 - [ ] Figure out precision issue (tile coordinates?)
 
@@ -22,6 +24,8 @@
 - [ ] Vessel list
 - [ ] Click to select vessel
 - [ ] Speed graph?
+- [ ] Toggle to show/hide full history
+- [ ] Show/hide vessels
 
 ### Data
 
