@@ -12,7 +12,8 @@ const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [playbackRate] = useState(2);
 
-  const raceData = useMemo(() => parseRaceData(data), []);
+  //const raceData = useMemo(() => parseRaceData(data), []);
+  const raceData = useMemo(() => parseRaceData(data3, 120), []);
 
   const limitedSetCurrentTime = (t: number) => {
     if (t > raceData.meta.lengthInMinutes)

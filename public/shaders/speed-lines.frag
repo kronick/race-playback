@@ -111,9 +111,17 @@ void main() {
     //                   (step(u_time_max, v_time) / 2.0 +
     //                   (u_persist_trace ? 0.5 : 0.0));
 
+    // Pairs well with gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA)
+    // for a glowy color effect
     float timeAlpha = step(v_time, u_time_min) * 
-                      (step(u_time_max, v_time)+
-                      (u_persist_trace ? 1.0 : 0.0));
+                      (smoothstep(u_time_max, mix(u_time_max, u_time_min, 0.8), v_time) +
+                      (u_persist_trace ? 0.1 : 0.0));
+
+    // Pairs well with gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // for a flat color effect
+    // float timeAlpha = step(v_time, u_time_min) * 
+    //                   (step(u_time_max, v_time)+
+    //                   (u_persist_trace ? 1.0 : 0.0));
 
     vec4 color = pickGradient(gradient, v_speed);
     color.a *= timeAlpha;

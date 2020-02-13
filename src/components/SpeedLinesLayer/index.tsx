@@ -257,8 +257,8 @@ class SpeedLinesLayer implements CustomLayerInterface {
     );
 
     gl.enable(gl.BLEND);
-    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); // Flat
+    gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA); // Glowy
   }
 
   drawTrace(gl: WebGLRenderingContext, offset: number, nPoints: number) {

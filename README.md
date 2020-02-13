@@ -15,7 +15,6 @@
 ### Shader
 
 - [x] Generate offset lines
-- [ ] Antialias lines?
 - [ ] Figure out precision issue (tile coordinates?)
 
 ### UI
