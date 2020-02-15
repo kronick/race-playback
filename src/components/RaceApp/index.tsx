@@ -39,30 +39,32 @@ const RaceApp: React.FC<{}> = () => {
   }, []);
 
   return (
-    <TimeContext.Provider
-      value={{
-        currentTime,
-        startTime: 0,
-        endTime: raceData.meta.lengthInMinutes,
-        setCurrentTime: limitedSetCurrentTime,
-        pause,
-        play,
-        isPlaying
-      }}
-    >
-      <MapboxMap
-        width="100vw"
-        height="100vh"
-        token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
-        styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
+    <div style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+      <TimeContext.Provider
+        value={{
+          currentTime,
+          startTime: 0,
+          endTime: raceData.meta.lengthInMinutes,
+          setCurrentTime: limitedSetCurrentTime,
+          pause,
+          play,
+          isPlaying
+        }}
       >
-        {raceData.vessels.map((v, i) => (
-          <Vessel data={v} key={v.name} trace={false} />
-        ))}
-        <SpeeedLinesLayer vessels={raceData.vessels} />
-      </MapboxMap>
-      <TimeController />
-    </TimeContext.Provider>
+        <MapboxMap
+          width="100vw"
+          height="100vh"
+          token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
+          styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
+        >
+          {raceData.vessels.map((v, i) => (
+            <Vessel data={v} key={v.name} trace={false} />
+          ))}
+          <SpeeedLinesLayer vessels={raceData.vessels} />
+        </MapboxMap>
+        <TimeController />
+      </TimeContext.Provider>
+    </div>
   );
 };
 
