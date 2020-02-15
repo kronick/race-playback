@@ -46,8 +46,8 @@ export const interpolatePosition = (
         ),
         heading: interpolateHeading(
           time,
-          positions[i_mid],
-          positions[i_mid + 1]
+          positions[i_mid - 1],
+          positions[i_mid]
         )
       };
     }
@@ -80,5 +80,5 @@ const interpolateHeading = (
   a: { timestamp: number; heading: number },
   b: { timestamp: number; heading: number }
 ): number => {
-  return a.heading;
+  return b.heading;
 };

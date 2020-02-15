@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useRef, useCallback } from "react";
+import React, { useContext, useCallback } from "react";
 import TimeContext from "../shared-contexts/TimeContext";
 import MapboxMapContext from "../MapboxMap/MapboxMapContext";
 import { VesselData } from "../../shared-types/race-data";
 
 import { interpolatePosition } from "../../utilities/vessel-data";
-import useThrottledEffect from "../shared-hooks/useThrottledEffect";
 
 import styles from "./Vessel.module.scss";
 

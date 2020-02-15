@@ -7,7 +7,7 @@
 - [x] Put map transform parameters into MapboxMapContext
 - [x] Triangle vessel markers
 - [x] Rotate vessel markers
-- [ ] Fix vessel heading off by one bug
+- [x] Fix vessel heading off by one bug
 - [x] Vessel markers scale with zoom
 - [x] New color scheme
 - [ ] per-vessel colors
