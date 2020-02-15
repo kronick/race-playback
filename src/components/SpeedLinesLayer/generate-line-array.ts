@@ -12,14 +12,20 @@ import {
   Vec2
 } from "./vector-utils";
 
-export default function generateLineArray(positions: PositionsArray): number[] {
+export default function generateLineArray(
+  positions: PositionsArray,
+  offset: [number, number] = [0, 0]
+): number[] {
   let lastCross = 0;
 
   const vertices = positions.flatMap((p, i) => {
-    const thisPoint = projectPoint(p);
+    const thisPoint = projectPoint(p, offset);
     const nextPoint =
-      i === positions.length - 1 ? null : projectPoint(positions[i + 1]);
-    const previousPoint = i === 0 ? null : projectPoint(positions[i - 1]);
+      i === positions.length - 1
+        ? null
+        : projectPoint(positions[i + 1], offset);
+    const previousPoint =
+      i === 0 ? null : projectPoint(positions[i - 1], offset);
 
     // Line start
     if (i === 0 && nextPoint) {
@@ -125,10 +131,10 @@ function serializeVertex(
   return [...coordinates, ...extrusion, timestamp, speed];
 }
 
-function projectPoint(p: { coordinates: Vec2 }): Vec2 {
+export function projectPoint(p: { coordinates: Vec2 }, offset: Vec2): Vec2 {
   const o = MercatorCoordinate.fromLngLat({
     lng: p.coordinates[0],
     lat: p.coordinates[1]
   });
-  return [o.x, o.y];
+  return [o.x - offset[0], o.y - offset[1]];
 }

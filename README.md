@@ -15,7 +15,7 @@
 ### Shader
 
 - [x] Generate offset lines
-- [ ] Figure out precision issue (tile coordinates?)
+- [x] Figure out precision issue (tile coordinates?)
 
 ### UI
 

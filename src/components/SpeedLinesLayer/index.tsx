@@ -3,11 +3,10 @@ import TimeContext from "../shared-contexts/TimeContext";
 import MapboxMapContext from "../MapboxMap/MapboxMapContext";
 import { VesselData, PositionsArray } from "../../shared-types/race-data";
 import { CustomLayerInterface } from "mapbox-gl";
+import { mat4, vec3 } from "gl-matrix";
 
 import usePrefetch from "../shared-hooks/usePrefetch";
-import generateLineArray from "./generate-line-array";
-//const vertexSource = raw("./shaders/speed-lines.vert");
-//const fragmentSource = raw("./shaders/speed-lines.frag");
+import generateLineArray, { projectPoint } from "./generate-line-array";
 
 type SpeedLinesLayerProps = {
   vessels: VesselData[];
@@ -94,6 +93,8 @@ class SpeedLinesLayer implements CustomLayerInterface {
   time: number = 0;
   map: mapboxgl.Map | null = null;
 
+  centerOffset: [number, number] = [0, 0];
+
   static floatsPerVertex = 6;
 
   constructor(
@@ -158,14 +159,22 @@ class SpeedLinesLayer implements CustomLayerInterface {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     const data: number[] = [];
     this.traceLengths = [];
+
+    // Center the coordinate system around the first point of the first path.
+    // This is a heuristic that keeps values small relative to the projection
+    // matrix so we don't lose precision in the 32-bit shader
+    this.centerOffset = projectPoint(this.positions[0][0], [0, 0]);
+
+    // Pack all vertices from all paths into a single vertex array that will
+    // be sent to the GPU and shaders.
     this.positions.forEach(p => {
-      const newPoints = generateLineArray(p);
+      const newPoints = generateLineArray(p, this.centerOffset);
       this.traceLengths.push(
         newPoints.length / SpeedLinesLayer.floatsPerVertex
       );
       data.push(...newPoints);
     });
-    //const data = this.positions.flatMap(p => generateLineArray(p));
+
     this.nVertices = data.length / SpeedLinesLayer.floatsPerVertex;
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
   }
@@ -173,11 +182,20 @@ class SpeedLinesLayer implements CustomLayerInterface {
   render(gl: WebGLRenderingContext, matrix: number[]) {
     if (!this.program || !this.map) return;
 
+    // Translate the projection matrix so it's centered around our geometry
+    // Without this, we will see a "boiling geometry" artifact when we zoom
+    // in as we lose precision in the 32-bit shader.
+    const centeredMatrix = mat4.translate(
+      emptyMat,
+      matrix as mat4,
+      [...this.centerOffset, 0] as vec3
+    );
+
     gl.useProgram(this.program);
     gl.uniformMatrix4fv(
       gl.getUniformLocation(this.program, "u_matrix"),
       false,
-      matrix
+      centeredMatrix
     );
 
     gl.useProgram(this.program);
@@ -266,3 +284,5 @@ class SpeedLinesLayer implements CustomLayerInterface {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.nVertices);
   }
 }
+
+const emptyMat: mat4 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];

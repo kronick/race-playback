@@ -15,6 +15,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-helmet": "^5.0.15",
     "classnames": "^2.2.6",
+    "gl-matrix": "^3.2.1",
     "mapbox-gl": "^1.7.0",
     "node-sass": "^4.13.1",
     "react": "^16.12.0",
