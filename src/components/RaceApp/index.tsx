@@ -1,18 +1,23 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { Grommet } from "grommet";
+
 import MapboxMap from "../MapboxMap";
 import TimeContext from "../shared-contexts/TimeContext";
 import parseRaceData from "../../utilities/parse-race-data";
 import Vessel from "../Vessel";
 import TimeController from "../TimeController";
-
 import useAnimationTimer from "../shared-hooks/useAnimationTimer";
 import SpeeedLinesLayer from "../SpeedLinesLayer";
+
+import theme from "./grommet-theme";
+import VesselList from "../VesselList";
 
 const RaceApp: React.FC<{}> = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [playbackRate] = useState(2);
 
   //const raceData = useMemo(() => parseRaceData(data), []);
+  //const raceData = useMemo(() => parseRaceData(data2), []);
   const raceData = useMemo(() => parseRaceData(data3, 120), []);
 
   const limitedSetCurrentTime = (t: number) => {
@@ -39,32 +44,35 @@ const RaceApp: React.FC<{}> = () => {
   }, []);
 
   return (
-    <div style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
-      <TimeContext.Provider
-        value={{
-          currentTime,
-          startTime: 0,
-          endTime: raceData.meta.lengthInMinutes,
-          setCurrentTime: limitedSetCurrentTime,
-          pause,
-          play,
-          isPlaying
-        }}
-      >
-        <MapboxMap
-          width="100vw"
-          height="100vh"
-          token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
-          styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
+    <Grommet theme={theme}>
+      <div style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+        <TimeContext.Provider
+          value={{
+            currentTime,
+            startTime: 0,
+            endTime: raceData.meta.lengthInMinutes,
+            setCurrentTime: limitedSetCurrentTime,
+            pause,
+            play,
+            isPlaying
+          }}
         >
-          {raceData.vessels.map((v, i) => (
-            <Vessel data={v} key={v.name} trace={false} />
-          ))}
-          <SpeeedLinesLayer vessels={raceData.vessels} />
-        </MapboxMap>
-        <TimeController />
-      </TimeContext.Provider>
-    </div>
+          <MapboxMap
+            width="100vw"
+            height="100vh"
+            token="pk.eyJ1Ijoia3JvbmljazIiLCJhIjoiY2s2YjlyeHBtMHo4dTNvcGI1bHB3bnBwbiJ9.b4qC25b1fUCZ2oGfEtO40w"
+            styleUrl="mapbox://styles/kronick2/ck6fqqoge28ko1itfba91un27"
+          >
+            {raceData.vessels.map((v, i) => (
+              <Vessel data={v} key={v.name} trace={false} />
+            ))}
+            <SpeeedLinesLayer vessels={raceData.vessels} />
+          </MapboxMap>
+          <TimeController />
+          {/* <VesselList vessels={raceData.vessels} /> */}
+        </TimeContext.Provider>
+      </div>
+    </Grommet>
   );
 };
 

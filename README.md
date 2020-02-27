@@ -25,6 +25,7 @@
 - [ ] Speed graph?
 - [ ] Toggle to show/hide full history
 - [ ] Show/hide vessels
+- [ ] Speed legend
 
 ### Data
 
